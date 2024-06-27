@@ -1,0 +1,62 @@
+import pytest
+import datetime
+import os
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from test.Profiles.ENTProfile import ENTProfile
+from selenium.webdriver.chrome.service import Service
+
+@pytest.fixture(scope='class')
+def init_driver(request):
+    service = Service(executable_path=r'/usr/lib/chromium/chromedriver')
+    o = Options()
+    o.binary_location = '/usr/bin/chromium-browser'
+    o.add_argument('--headless')
+    o.add_argument('--ignore-certificate-errors')
+    o.add_argument('--disable-gpu')
+    o.add_argument('--no-sandbox')
+    o.add_argument("--disable-dev-shm-usage")
+#   o.add_argument('--window-size=3800x2160')
+    o.add_argument('--window-size=1900x1080')
+#   o.add_argument('--window-size=1024x3000')
+#   o.add_argument('start-maximized"')
+#   o.add_argument("--disable-renderer-backgrounding")
+#   o.add_argument("--disable-background-timer-throttling")
+#   o.add_argument("--disable-backgrounding-occluded-windows")
+#   o.add_argument("--disable-client-side-phishing-detection")
+#   o.add_argument("--disable-crash-reporter")
+#   o.add_argument("--disable-oopr-debug-crash-dump")
+#   o.add_argument("--no-crash-upload")
+#   o.add_argument("--disable-extensions")
+#   o.add_argument("--disable-low-res-tiling")
+#   o.add_argument("--log-level=3")
+#   o.add_argument("--silent")
+#   o.page_load_strategy = 'none'
+    driver = webdriver.Chrome(service=service, options=o)
+    driver.get(ENTProfile.BASE_URL)
+    driver.maximize_window()
+    driver.implicitly_wait(ENTProfile.MAX_TIMEOUT)
+    driver.set_page_load_timeout(ENTProfile.MAX_TIMEOUT)
+    request.cls.driver = driver
+
+    yield
+    driver.quit()
+
+@pytest.fixture(scope='class')
+def init_driverGrid(request):
+
+       driver = webdriver.Remote(
+           command_executor="http://10.80.146.42:4444/wd/hub",
+           options=webdriver.ChromeOptions()
+        )
+       driver.implicitly_wait(10) #seconds
+       driver.get(ENTProfile.BASE_URL)
+       driver.maximize_window()
+       request.cls.driver = driver
+       yield
+       driver.quit()
+
+#@pytest.mark.usefixtures("init_driver")
+@pytest.mark.usefixtures("init_driverGrid")
+class BaseTest:
+    pass
