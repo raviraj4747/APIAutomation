@@ -17,6 +17,7 @@ properties(
           string(name: 'Regressiontestcase', defaultValue: 'Regressiontestcase.csv', description:'Regressiontestcase', ),
           string(name: 'TIMEOUT', defaultValue: '1200', description:'TIMEOUT (sec)', ),
           choice(choices: ['YES'],name: 'PARALLELRUNNING'),
+          choice(choices: ['NO', 'YES'],name: 'GridRunning'),
         ]),
         buildDiscarder(logRotator(daysToKeepStr: '20', numToKeepStr: '20'))
      // pipelineTriggers([cron('H 23 * * *')])
@@ -53,7 +54,7 @@ node(node) {
                         [$class: 'PreBuildMerge', options: [fastForwardMode: 'NO_FF', mergeRemote: 'origin', mergeTarget: env.CHANGE_TARGET]],
                     ]),
                     submoduleCfg: [],
-                    userRemoteConfigs: [[name: 'origin', url: 'https://github.com/raviraj4747/APIAutomation.git',credentialsId: '17998204-00c8-41e3-9d01-5bd5a1a29f98']]
+                    userRemoteConfigs: [[name: 'origin', url: 'https://github.com/asahigroup/AGJAutomation.git',credentialsId: '17998204-00c8-41e3-9d01-5bd5a1a29f98']]
 
        ])
 
@@ -62,6 +63,18 @@ node(node) {
   try {
 
     stage('prepare test') {
+
+     if("${params.GridRunning}" == "YES") {
+       sh "sudo rm -f test/conftest.py"
+       sh "sudo mv test/conftest1.local test/conftest.py"
+       stage('Build Selenium Grid Node') {
+          def lines = readFile("Data/${Regressiontestcase}").readLines()
+          def numOfChunks = ((lines.size() / 10) as int) + 1
+          println "Number of Chunks: ${numOfChunks}"  
+          sh "sudo docker run --rm -d create-node ${numOfChunks}"
+          sleep 240
+        }
+     }
      
      if("${params.PARALLELRUNNING}" == "YES") {
 

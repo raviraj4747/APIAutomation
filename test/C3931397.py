@@ -10,18 +10,17 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 import time
 
-testcase_name = "C3931395"
+testcase_name = "C3931397"
 
 
 class TestLogin(BaseTest):
 
-    def test_C3931395(self):
+    def test_C3931397(self):
 
         try:
             # login into application
             TestLogIn.login_into_application(self.driver, ENTProfile.USERNAME1, ENTProfile.PASSWORD)
-            time.sleep(60)
-            # navigate to page 123
+            time.sleep(20)
 
         except:
             CommonActions.mark_fail(self.driver, testcase_name)
