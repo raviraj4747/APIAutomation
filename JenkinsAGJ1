@@ -17,7 +17,6 @@ properties(
           string(name: 'Regressiontestcase', defaultValue: 'Regressiontestcase.csv', description:'Regressiontestcase', ),
           string(name: 'TIMEOUT', defaultValue: '1200', description:'TIMEOUT (sec)', ),
           choice(choices: ['YES'],name: 'PARALLELRUNNING'),
-          choice(choices: ['NO', 'YES'],name: 'GridRunning'),
         ]),
         buildDiscarder(logRotator(daysToKeepStr: '20', numToKeepStr: '20'))
      // pipelineTriggers([cron('H 23 * * *')])
@@ -63,18 +62,6 @@ node(node) {
   try {
 
     stage('prepare test') {
-
-     if("${params.GridRunning}" == "YES") {
-       sh "sudo rm -f test/conftest.py"
-       sh "sudo mv test/conftest1.local test/conftest.py"
-       stage('Build Selenium Grid Node') {
-          def lines = readFile("Data/${Regressiontestcase}").readLines()
-          def numOfChunks = ((lines.size() / 10) as int) + 1
-          println "Number of Chunks: ${numOfChunks}"  
-          sh "sudo docker run --rm -d create-node ${numOfChunks}"
-          sleep 180
-        }
-     }
      
      if("${params.PARALLELRUNNING}" == "YES") {
 
