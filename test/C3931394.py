@@ -15,7 +15,7 @@ import time
 testcase_name = "C3931394"
 
 
-class TestLogin():
+class TestLogin(BaseTest):
 
     def test_C3931394(self):
 
