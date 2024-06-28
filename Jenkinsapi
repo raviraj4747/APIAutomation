@@ -60,9 +60,9 @@ node(node) {
     }
 
   try {
-
+     stage('prepare test') {
      
-     if("${params.PARALLELRUNNING}" == "YES") {
+      if("${params.PARALLELRUNNING}" == "YES") {
 
        def branch = env.BRANCH_NAME
        sh "pwd"
