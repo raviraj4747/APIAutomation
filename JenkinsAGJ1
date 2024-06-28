@@ -14,10 +14,10 @@ properties(
     [
         parameters([
           string(name: 'node', defaultValue: 'automation', description: 'Jenkins Node Name', ),
-          string(name: 'Regressiontestcase', defaultValue: 'Regressiongrid.csv', description:'Regressiontestcase', ),
+          string(name: 'Regressiontestcase', defaultValue: 'Regressiontestcase.csv', description:'Regressiontestcase', ),
           string(name: 'TIMEOUT', defaultValue: '1200', description:'TIMEOUT (sec)', ),
           choice(choices: ['YES'],name: 'PARALLELRUNNING'),
-          choice(choices: ['NO','YES'],name: 'GridRunning'),
+          choice(choices: ['NO', 'YES'],name: 'GridRunning'),
         ]),
         buildDiscarder(logRotator(daysToKeepStr: '20', numToKeepStr: '20'))
      // pipelineTriggers([cron('H 23 * * *')])
@@ -54,7 +54,7 @@ node(node) {
                         [$class: 'PreBuildMerge', options: [fastForwardMode: 'NO_FF', mergeRemote: 'origin', mergeTarget: env.CHANGE_TARGET]],
                     ]),
                     submoduleCfg: [],
-                    userRemoteConfigs: [[name: 'origin', url: 'https://github.com/asahigroup/converse-selenium.git',credentialsId: '8de7f348-d672-40a5-b44d-36b84400fa64']]
+                    userRemoteConfigs: [[name: 'origin', url: 'https://github.com/asahigroup/AGJAutomation.git',credentialsId: '17998204-00c8-41e3-9d01-5bd5a1a29f98']]
 
        ])
 
@@ -64,23 +64,18 @@ node(node) {
 
     stage('prepare test') {
 
-    if("${params.GridRunning}" == "YES") {
+     if("${params.GridRunning}" == "YES") {
        sh "sudo rm -f test/conftest.py"
        sh "sudo mv test/conftest1.local test/conftest.py"
        stage('Build Selenium Grid Node') {
           def lines = readFile("Data/${Regressiontestcase}").readLines()
           def numOfChunks = ((lines.size() / 10) as int) + 1
-          println "Number of Chunks: ${numOfChunks}"
+          println "Number of Chunks: ${numOfChunks}"  
           sh "sudo docker run --rm -d create-node ${numOfChunks}"
           sleep 180
         }
-      }
-
-     if("${params.LOCALDRIVER}" == "YES") {
-       sh "sudo rm -f test/conftest.py"
-       sh "sudo mv test/conftest.local test/conftest.py"
      }
-
+     
      if("${params.PARALLELRUNNING}" == "YES") {
 
        def branch = env.BRANCH_NAME
@@ -94,7 +89,7 @@ node(node) {
 
        sh "sudo mkdir ${workspace}/wk"
        sh "sudo chmod 777 ${workspace}/wk"
-       sh "sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport,ac,actimeo=0 fs-0ca21c187c659e2e4.efs.ap-northeast-1.amazonaws.com:/ ${workspace}/wk"
+       sh "sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport,ac,actimeo=0 fs-025a1dd2a1df296a0.efs.ap-northeast-1.amazonaws.com:/ ${workspace}/wk"
 
        cleanupEFS()
 
@@ -155,16 +150,16 @@ node(node) {
 
                if("${params.PARALLELRUNNING}" == "YES") {
                    println "Parallel YES"
-                     readFile("Data/${Regressiontestcase}").split('\n').each { line, count -> def fields = line.split(',')
-                      script     = fields[0]
+                   readFile("Data/${Regressiontestcase}").split('\n').each { line, count -> def fields = line.split(',')
+                      script1     = fields[0]
                       testresult1 = fields[1]
 
                       js = "${branch}" + "${TIME_STAMP}" + index + ".json"
                       def fp = "${workspace}/${js}"
                       fps << fp
 
-                      def script1 = "/test/${WK}/test/${script}"
-                      sh "python3 dynamicgrid.py ${script1} > ${fp}"
+                      def script1 = "/test/${WK}/test/${script1}"
+                      sh "python3 automationAGJ1.py ${script1} > ${fp}"
                       sleep 3
                       index++
                    }
@@ -176,6 +171,7 @@ node(node) {
                    }
                    println allTasks
                    waitingTasks(allTasks)
+
                } else {  //SEQUENTIAL RUNNING
                   println "Parallel NO"
                   readFile("${unzip}").split('\n').each { line, count -> def fields = line.split(',')
@@ -336,7 +332,7 @@ def waitingTasks(tasks) {
              for (task in tasks) {
                if(running.contains(task)) {
                  try {
-                   sh "aws ecs stop-task --cluster converse-selenium --task ${task}"
+                   sh "aws ecs stop-task --cluster selenium-selenium --task ${task}"
                    sleep 1
                  } catch(e) {
                  }

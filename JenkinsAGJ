@@ -54,7 +54,7 @@ node(node) {
                         [$class: 'PreBuildMerge', options: [fastForwardMode: 'NO_FF', mergeRemote: 'origin', mergeTarget: env.CHANGE_TARGET]],
                     ]),
                     submoduleCfg: [],
-                    userRemoteConfigs: [[name: 'origin', url: 'https://github.com/asahigroup/converse-selenium.git',credentialsId: '17998204-00c8-41e3-9d01-5bd5a1a29f98']]
+                    userRemoteConfigs: [[name: 'origin', url: 'https://github.com/asahigroup/AGJAutomation.git',credentialsId: '17998204-00c8-41e3-9d01-5bd5a1a29f98']]
 
        ])
 

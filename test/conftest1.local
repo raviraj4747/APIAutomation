@@ -1,10 +1,7 @@
-import time
-
 import pytest
 import datetime
 import os
 from selenium import webdriver
-from selenium.common import WebDriverException
 # from webdriver_manager.chrome import ChromeDriverManager
 # from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
@@ -50,33 +47,17 @@ def init_driver(request):
 def init_driverGrid(request):
     from selenium import webdriver
 
-    # Maximum time to wait for the Selenium node to become available
-    max_wait_time = 180  # seconds
-    wait_interval = 5     # seconds
-
-    start_time = time.time()
-
-    while time.time() - start_time < max_wait_time:
-        try:
-            # Attempt to initialize the WebDriver instance
-            driver = webdriver.Remote(
-                command_executor="http://52.195.189.94:4444/wd/hub",
-                options=webdriver.ChromeOptions()
-            )
-            driver.implicitly_wait(ENTProfile.MAX_TIMEOUT)
-            driver.get(ENTProfile.BASE_URL)
-            driver.maximize_window()
-            request.cls.driver = driver
-            yield
-            driver.quit()
-            return
-        except WebDriverException:
-            # If the node is not found, wait for a certain interval before retrying
-            time.sleep(wait_interval)
-
-    # If the maximum wait time is exceeded without finding the node, raise an exception
-    raise Exception("Selenium Grid node not found within the specified timeout period.")
-
+    driver = webdriver.Remote(
+        #command_executor="http://10.80.146.42:4444/wd/hub",
+        command_executor="http://10.80.146.34:4444/wd/hub",
+        options=webdriver.ChromeOptions()
+    )
+    driver.implicitly_wait(ENTProfile.MAX_TIMEOUT)
+    driver.get(ENTProfile.BASE_URL)
+    driver.maximize_window()
+    request.cls.driver = driver
+    yield
+    driver.quit()
 
 # push the latest code push inside
 

@@ -20,7 +20,7 @@ class TestLogin(BaseTest):
         try:
             # login into application
             TestLogIn.login_into_application(self.driver, ENTProfile.USERNAME1, ENTProfile.PASSWORD)
-            time.sleep(20)
+            time.sleep(60)
             # navigate to page 123
 
         except:

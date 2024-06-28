@@ -21,7 +21,7 @@ class TestLogin(BaseTest):
         try:
             # login into application1`
             TestLogIn.login_into_application(self.driver, ENTProfile.USERNAME1, ENTProfile.PASSWORD)
-            time.sleep(30)
+            time.sleep(60)
             ObjectActions.click_object(self.driver,LogInPage.Contact_us)
             ObjectActions.click_object(self.driver, LogInPage.Contact_group_holding)
 

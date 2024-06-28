@@ -19,6 +19,7 @@ properties(
           choice(choices: ['YES'],name: 'LOCALDRIVER'),
         ]),
         buildDiscarder(logRotator(daysToKeepStr: '20', numToKeepStr: '20')),
+        pipelineTriggers([cron('30 8 * * *')])
     ]
 )
 
@@ -64,7 +65,7 @@ node(node) {
 
      if("${params.LOCALDRIVER}" == "YES") {
        sh "sudo rm -f test/conftest.py"
-       sh "sudo mv test/conftest2.local test/conftest.py"
+       sh "sudo mv test/conftest.local test/conftest.py"
      }
 
      if("${params.PARALLELRUNNING}" == "YET") {

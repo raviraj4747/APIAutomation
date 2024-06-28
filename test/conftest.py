@@ -60,7 +60,8 @@ def init_driverGrid(request):
         try:
             # Attempt to initialize the WebDriver instance
             driver = webdriver.Remote(
-                command_executor="http://52.195.189.94:4444/wd/hub",
+                #command_executor="http://10.80.146.42:4444/wd/hub",
+                command_executor="http://10.80.146.57:4444/wd/hub",
                 options=webdriver.ChromeOptions()
             )
             driver.implicitly_wait(ENTProfile.MAX_TIMEOUT)
