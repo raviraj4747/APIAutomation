@@ -15,7 +15,7 @@ import time
 testcase_name = "C3931393"
 
 
-class TestLogin():
+class TestLogin(BaseTest):
 
     def test_C3931393(self):
 
@@ -23,3 +23,5 @@ class TestLogin():
             url = 'https://www.google.com'
             response = requests.get(url)
             assert response.status_code == 200, f"Expected status code 200, but got {response.status_code}"
+
+
