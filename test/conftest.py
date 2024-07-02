@@ -8,7 +8,6 @@ from selenium.common import WebDriverException
 # from webdriver_manager.chrome import ChromeDriverManager
 # from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.chrome.options import Options
-from test.Profiles.ENTProfile import ENTProfile
 from selenium.webdriver.chrome.service import Service
 
 
