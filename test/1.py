@@ -7,7 +7,7 @@ testcase_name = "C3931394"
 class TestSearchPatient():
 
     def test_C3931394(self):
-            time.sleep(20000)
+            time.sleep(20)
             try:
                 a = 10
                 b = 20
